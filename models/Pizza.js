@@ -3,10 +3,14 @@ const moment = require('moment');
 
 const PizzaSchema = new Schema({
     pizzaName: {
-        type: String
+        type: String,
+        required: 'You need to provide a pizza name',
+        trim: true
     },
     createdBy: {
-        type: String
+        type: String,
+        required: 'You have to tell the world your invention',
+        trim: true
     },
     createdAt: {
         type: Date,
@@ -15,6 +19,8 @@ const PizzaSchema = new Schema({
     },
     size: {
         type: String,
+        required: 'Tell us your pizza size',
+        enum: ['Personal', 'Small', 'Medium', 'Large', 'Extra Large'], //enumerable - term in web dev referring to set of data
         default: 'Large'
     },
     toppings: [{
