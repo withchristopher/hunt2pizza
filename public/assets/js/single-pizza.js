@@ -154,7 +154,7 @@ function handleNewReplySubmit(event) {
 
   fetch(`/api/comments/${pizzaId}/${commentId}`, {
     method: 'PUT',
-    headers:{
+    headers : {
       Accept: 'application/json',
       'Content-Type':'application/json'
     },
