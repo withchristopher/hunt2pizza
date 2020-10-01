@@ -1,8 +1,8 @@
 const { Schema, model, Types } = require('mongoose');
+const moment = require('moment');
 
 const ReplySchema = new Schema({
-
-    // set custom id to avoid confusion with parent comment _id
+    // set custom id to avoid confusion with parent comment's _id field
     replyId: {
         type: Schema.Types.ObjectId,
         default: () => new Types.ObjectId()
@@ -14,11 +14,15 @@ const ReplySchema = new Schema({
         type: String
     },
     createdAt: {
-        type: Date.now,
+        type: Date,
         default: Date.now,
         get: createdAtVal => moment(createdAtVal).format('MMM DD, YYYY [at] hh:mm a')
     }
-})
+}, {
+    toJSON: {
+        getters: true
+    }
+});
 
 const CommentSchema = new Schema({
     writtenBy: {
@@ -29,9 +33,24 @@ const CommentSchema = new Schema({
     },
     createdAt: {
         type: Date,
-        default: Date.now
-    }
+        default: Date.now,
+        get: createdAtVal => moment(createdAtVal).format('MMM DD, YYYY [at] hh:mm a')
+    },
+    // use ReplySchema to validate data for a reply
+    replies: [ReplySchema]
+}, {
+    toJSON: {
+        virtuals: true,
+        getters: true
+    },
+    id: false
 });
+
+// get total count of comments and replies on retrieval
+CommentSchema.virtual('replyCount').get(function() {
+    return this.replies.length;
+});
+
 
 const Comment = model('Comment', CommentSchema);
 
